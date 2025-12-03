@@ -12,7 +12,11 @@ const OrderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
+    processed: {
+        type: Boolean,
+        default: false
+    },
+    
     cart: [
         {
             id: Number,

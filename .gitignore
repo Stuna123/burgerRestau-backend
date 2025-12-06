@@ -1,2 +1,3 @@
+controllers/
 node_modules/
 .env

@@ -1,62 +1,58 @@
+// backend/routes/authRoutes.js
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 const router = express.Router();
+
+console.log("DEBUG SECRET IN AUTH:", process.env.JWT_SECRET);
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
-const SALT = parseInt(process.env.BCRYPT_SALT_ROUNDS || "10", 10);
+const SALT = parseInt(process.env.BCRYPT_SALT_ROUNDS || "10");
 
-// Création de l'administrateur une fois pour toute
-router.post("/register", async(req, res) => {
+router.post("/register", async (req, res) => {
     try {
-        const {email, password, name} = req.body;
-        if(!email || !password) {
-            return res.status(400).json({message: "Email et mot de passe requis!"});
-        }
-            
+        const { email, password, name } = req.body;
+
+        if (!email || !password)
+            return res.status(400).json({ message: "Email et mot de passe requis" });
+
         const exists = await User.findOne({ email });
-        if(exists) {
-            return res.status(400).json({ message: "Utilisateur existe déjà !" })
-        }
+        if (exists)
+            return res.status(400).json({ message: "Utilisateur existe déjà" });
 
         const hash = await bcrypt.hash(password, SALT);
+
         const user = new User({ email, password: hash, name, role: "admin" });
         await user.save();
 
-        res.status(201).json({ message: "Admin créé avec succès !" });
+        res.status(201).json({ message: "Admin créé avec succès" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-})
+});
 
-// Authentification
 router.post("/login", async (req, res) => {
+
     try {
         const { email, password } = req.body;
-        if(!email || !password) {
-            return res.status(400).json({ message: "Email et mot de passe requis"})
-        }
-
         const user = await User.findOne({ email });
-        if(!user) {
-            return res.status(401).json({ message: "Identifiants invalides" });
-        }
+        if (!user) return res.status(401).json({ message: "Identifiants invalides" });
 
-        const valide = await bcrypt.compare(password, user.password);
-        if(!valide) {
-            return res.status(401).json({ message: "Identifiants invalide !"});
-        }
+        const valid = await bcrypt.compare(password, user.password);
+        if (!valid) return res.status(401).json({ message: "Identifiants invalides" });
 
-        const payload   = { id: user._id, email: user.email, role: user.role }
-        const token     = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
-    
-        res.json({ token, user: { id: user._id, email: user.email, name: user.name, role: user.role } })
+        const payload = { id: user._id, email: user.email, role: user.role };
+        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
+        res.json({
+            token,
+            user: { id: user._id, email: user.email, name: user.name, role: user.role }
+        });
     } catch (err) {
-        res.status(400).json({ error: err.message })
+        res.status(400).json({ error: err.message });
     }
-})
+});
 
 export default router;

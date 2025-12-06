@@ -75,13 +75,11 @@ router.put("/:id", async (req, res) => {
 })
 */
 
-
-
 /**
  * Delete /api/orders/:id
  * supprimer une commande (admin)
 */
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", protect, isAdmin, async (req, res) => {
     try {
         const deleted = await Order.findByIdAndDelete(req.params.id);
         if(!deleted) {
@@ -100,7 +98,7 @@ router.delete("/:id", async (req, res) => {
  *      - CA total, 
  *      - commandes traitées / en attente
 */
-router.get("/stats/summary", async (req, res) => {
+router.get("/stats/summary", protect, isAdmin, async (req, res) => {
     try {
         const totalOrders = await Order.countDocuments();
         const orders = await Order.find();

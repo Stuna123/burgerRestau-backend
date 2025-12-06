@@ -1,0 +1,46 @@
+// Test A (création utilisateur) - Depuis Postman vers Render
+// POST https://burgerrestau-backend.onrender.com/api/auth/register
+
+// Dans le body, ajoutez ceci :
+{
+ "name": "Admin",   
+ "email": "tab@bh.com",
+ "password": "..." // Mettez un mot de passe qui sera identique à JWT_SECRET dans Render qui est dans la variable d'environnement
+}
+
+// Test authentification
+// POST https://burgerrestau-backend.onrender.com/api/auth/login
+{
+ "email": "tab@bh.com",
+ "password": "..." // Mettez un mot de passe qui sera identique à JWT_SECRET dans Render qui est dans la variable d'environnement
+}
+
+// Si tout est correct, vous devriez avoir un message de ce genre :
+{
+    "token": "eyJhbGciOiJIUzI1Ni...",
+    "user": {
+        "id": "693414870....",
+        "email": "tab@bh.com",
+        "name": "Admin",
+        "role": "admin"
+    }
+}
+
+// En local fait la même chose seulement avec ce lien : http://localhost:5000/api/auth/register ensuite http://localhost:5000/api/auth/login
+
+// Voici un exemple :
+{
+  "name": "Admin",
+  "email": "admin@bh.com",
+  "password": "admin123"
+}
+
+{
+    "token": "eyJhbGciOiJIUzI1Ni....",
+    "user": {
+        "id": "693414870fd51f4621f9de2c",
+        "email": "admin@bh.com",
+        "name": "Admin",
+        "role": "admin"
+    }
+}

@@ -26,7 +26,7 @@
     }
 }
 
-// En local fait la même chose seulement avec ce lien : http://localhost:5000/api/auth/register ensuite http://localhost:5000/api/auth/login
+// En local faites la même chose seulement avec ce lien : http://localhost:5000/api/auth/register ensuite http://localhost:5000/api/auth/login
 
 // Voici un exemple :
 {
